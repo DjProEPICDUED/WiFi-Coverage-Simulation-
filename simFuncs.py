@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Attenuation per wall type (dB)
 WALL_ATTENUATION = {
     0: 0,      # empty
     1: 5,      # drywall
@@ -50,17 +49,12 @@ def count_walls_between(router, cell, wallGrid):
 
     return walls
 
+def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
 
-def get_wall_loss_along_ray(router, cell, wallGrid):
-    """
-    Computes TOTAL attenuation (dB) along the straight line
-    from router → cell.
-    Properly counts unique wall cells and applies correct material attenuation.
-    """
     r0, c0 = router
     r1, c1 = cell
 
-    samples = 300  # smooth ray tracing
+    samples = 300
     visited = set()
     total_loss = 0
 
@@ -68,74 +62,30 @@ def get_wall_loss_along_ray(router, cell, wallGrid):
         r = int(r0 + (r1 - r0) * t)
         c = int(c0 + (c1 - c0) * t)
 
-        # If out of bounds, skip
         if r < 0 or c < 0 or r >= wallGrid.shape[0] or c >= wallGrid.shape[1]:
             continue
 
         if (r, c) not in visited:
             visited.add((r, c))
-            wall_type = int(wallGrid[r, c])
-            total_loss += WALL_ATTENUATION[wall_type]
+            if wallGrid[r, c] != 0:
+                total_loss += wallType 
 
     return total_loss
 
+def simuSignal(router, p0, nEmpty, wallGrid, wallType):
+    grid = np.zeros((50, 50))
 
-def simuSignal(grid, router, p0, nEmpty, wallGrid=None):
-    """
-    Simulates Wi-Fi signal strength across the grid.
-    Includes:
-        - free space path loss
-        - attenuation through walls (ray marching)
-    """
-    rows, cols = grid.shape
-    newGrid = np.zeros_like(grid)
-
-    for r in range(rows):
-        for c in range(cols):
+    for r in range(50):
+        for c in range(50):
 
             d = np.sqrt((r - router[0])**2 + (c - router[1])**2)
 
             if d == 0:
-                newGrid[r, c] = p0
-                continue
+                grid[r, c] = p0
 
-            # Free space loss
-            Pr = p0 - 10 * nEmpty * np.log10(d)
+            wall_loss = get_wall_loss_along_ray(router, (r, c), wallGrid, wallType)
+            Pr = p0 - 10 * nEmpty * np.log10(d) - wall_loss
 
-            # Add wall attenuation
-            if wallGrid is not None:
-                wall_loss = get_wall_loss_along_ray(router, (r, c), wallGrid)
-                Pr -= wall_loss
+            grid[r, c] = Pr
 
-            newGrid[r, c] = Pr
-
-    return newGrid
-
-
-def plotHeatmap(grid, router, wallGrid=None):
-    """
-    Draws heatmap with walls underneath.
-    """
-    plt.figure(figsize=(8, 8))
-
-    # Dynamic color scaling
-    im = plt.imshow(grid, origin="lower",
-                    cmap="inferno", alpha=0.85,
-                    vmin=np.max(grid),
-                    vmax=np.min(grid))
-
-    # Overlay walls
-    if wallGrid is not None:
-        wall_overlay = np.ma.masked_where(wallGrid == 0, wallGrid)
-        plt.imshow(wall_overlay, cmap="gray", origin="lower", alpha=0.35)
-
-    # Router marker
-    plt.scatter(router[1], router[0],
-                c='cyan', s=150, edgecolors='black', label="Router")
-
-    plt.colorbar(im, label="Signal Strength (dBm)")
-    plt.title("Wi-Fi Signal Strength Heatmap")
-    plt.xlabel("X position (m)")
-    plt.ylabel("Y position (m)")
-    plt.legend(loc="upper right")
-    plt.show()
+    return grid
