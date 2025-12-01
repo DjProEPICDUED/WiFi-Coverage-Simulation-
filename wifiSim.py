@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import time
 from simFuncs import *
 from inAndOut import *
+from gui import *
 
 ui = input("Do you want to simulate a custom router or one of 3 best selling routers? (custom/best) -> ")
 if ui == "best":
