@@ -85,3 +85,7 @@ def start_editor():
     plt.show()
 
     return wall_grid, routers
+
+
+if __name__ == '__main__':
+    start_editor()
