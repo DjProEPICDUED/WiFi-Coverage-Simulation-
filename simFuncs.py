@@ -37,10 +37,6 @@ def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
     return total_loss
 
 def simuSignal(routers, p0, nEmpty, wallGrid, wallType):
-    """
-    routers: list of [row, col] router positions
-    returns: final grid (max signal from all routers)
-    """
     GRID_SIZE = wallGrid.shape[0]
     full_grid = np.full((GRID_SIZE, GRID_SIZE), -9999.0)
 
