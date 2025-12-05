@@ -9,17 +9,10 @@ WALL_ATTENUATION = {
 }
 
 def calc_p0(bandChoice, tx, gain):
-    """
-    Compute reference received power P0 at 1 meter.
-    """
     freq = bandChoice * 1e9
     p0 = tx + gain - (20 * np.log10(freq) - 147.55)
     return p0
 
-
-# =====================================================================
-# Wall Loss (same as before)
-# =====================================================================
 def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
 
     r0, c0 = router
@@ -43,10 +36,6 @@ def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
 
     return total_loss
 
-
-# =====================================================================
-# MAIN SIMULATION — UPDATED TO HANDLE MULTIPLE ROUTERS
-# =====================================================================
 def simuSignal(routers, p0, nEmpty, wallGrid, wallType):
     """
     routers: list of [row, col] router positions
@@ -55,7 +44,6 @@ def simuSignal(routers, p0, nEmpty, wallGrid, wallType):
     GRID_SIZE = wallGrid.shape[0]
     full_grid = np.full((GRID_SIZE, GRID_SIZE), -9999.0)
 
-    # Loop over ALL routers
     for router in routers:
 
         temp_grid = np.zeros((GRID_SIZE, GRID_SIZE))
@@ -65,7 +53,6 @@ def simuSignal(routers, p0, nEmpty, wallGrid, wallType):
 
                 d = np.sqrt((r - router[0])**2 + (c - router[1])**2)
 
-                # avoid log10(0)
                 if d == 0:
                     Pr = p0
                 else:
@@ -74,7 +61,6 @@ def simuSignal(routers, p0, nEmpty, wallGrid, wallType):
 
                 temp_grid[r, c] = Pr
 
-        # take strongest signal among routers
         full_grid = np.maximum(full_grid, temp_grid)
 
     return full_grid

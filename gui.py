@@ -70,11 +70,9 @@ def start_editor():
     fig = plt.figure(figsize=(7, 7))
     draw_editor()
 
-    # mouse + keyboard events
     fig.canvas.mpl_connect('button_press_event', onclick)
     fig.canvas.mpl_connect('key_press_event', on_key)
 
-    # ----- BUTTONS -----
     ax_add = plt.axes([0.1, 0.01, 0.25, 0.05])
     ax_remove = plt.axes([0.65, 0.01, 0.25, 0.05])
 

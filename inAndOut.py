@@ -109,8 +109,13 @@ def plotHeatmap(grid, router, wallGrid=None):
         wall_overlay = np.ma.masked_where(wallGrid == 0, wallGrid)
         plt.imshow(wall_overlay, cmap="gray", origin="lower", alpha=0.35)
 
-    plt.scatter(router[1], router[0],
-                c='cyan', s=150, edgecolors='black', label="Router")
+    i = 0
+    for r in router:  
+        if i == 0:
+            plt.scatter(r[1], r[0], c='cyan', s=150, edgecolors='black', label="Router")
+        else:
+            plt.scatter(r[1], r[0], c='cyan', s=150, edgecolors='black')
+        i += 1
 
     plt.colorbar(im, label="Signal Strength (dBm)")
     plt.title("Wi-Fi Signal Strength Heatmap")
