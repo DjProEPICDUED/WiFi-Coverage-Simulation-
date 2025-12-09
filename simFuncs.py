@@ -14,12 +14,21 @@ def calc_p0(bandChoice, tx, gain):
     return p0
 
 def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
-
     r0, c0 = router
     r1, c1 = cell
+    
+    dist = np.sqrt((r1 - r0)**2 + (c1 - c0)**2)
+    
+    if dist == 0:
+        return 0
 
-    samples = 500
-    visited = set()
+    samples = int(dist * 5)
+    
+    if samples < 5: 
+        samples = 5
+
+    step_length = dist / samples
+    
     total_loss = 0
 
     for t in np.linspace(0, 1, samples):
@@ -29,10 +38,8 @@ def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
         if r < 0 or c < 0 or r >= wallGrid.shape[0] or c >= wallGrid.shape[1]:
             continue
 
-        if (r, c) not in visited:
-            visited.add((r, c))
-            if wallGrid[r, c] != 0:
-                total_loss += wallType
+        if wallGrid[r, c] != 0:
+            total_loss += wallType * step_length
 
     return total_loss
 
