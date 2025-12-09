@@ -18,7 +18,7 @@ def get_wall_loss_along_ray(router, cell, wallGrid, wallType):
     r0, c0 = router
     r1, c1 = cell
 
-    samples = 300
+    samples = 500
     visited = set()
     total_loss = 0
 

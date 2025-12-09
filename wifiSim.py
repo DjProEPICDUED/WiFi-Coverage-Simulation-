@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import time
 from simFuncs import *
 from inAndOut import *
 from gui import *
@@ -10,8 +9,6 @@ if ui == "best":
     bandChoice, tx, gain, wallType, n = user_input()
 else:
     bandChoice, tx, gain, wallType, n = cust_user_input()
-
-time.sleep(1.5)
 
 #For testing purposes
 # routerType = 3
