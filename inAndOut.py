@@ -37,46 +37,50 @@ def user_input():
     print("3) GL-iNet Opal: 19.4dBm Tx Power, 2dBi Gain (2.4GHz); 22.47dBm Tx Power, 2dBi Gain (5GHz)")
 
     while True:
-        routerType = int(input("Enter 1, 2, or 3 -> "))
-        if routerType == 1 or routerType == 2 or routerType == 3:
-            break
-        else:
-            print("Invalid input, please enter 1, 2, or 3")
+        try:
+            routerType = int(input("Enter 1, 2, or 3 -> "))
+            if routerType == 1 or routerType == 2 or routerType == 3:
+                break
+            else:
+                print("Invalid input, please enter 1, 2, or 3")
+        except ValueError:
+            print("Invalid input. Please enter an integer (1, 2, or 3).")
 
     print("These routers are dual-band, meaning they opreate on both 2.4GHz and 5GHz frequencies.")
     print("Would you like to simulate the 2.4GHz or 5GHz band?")
 
     while True:
-        bandChoice = float(input("Enter 2.4 or 5 -> "))
-        if bandChoice == 2.4 or bandChoice == 5:
-            break
-        else:
-            print("Invalid input, please enter 2.4 or 5")
+        try:
+            bandChoice = float(input("Enter 2.4 or 5 -> "))
+            if bandChoice == 2.4 or bandChoice == 5:
+                break
+            else:
+                print("Invalid input, please enter 2.4 or 5")
+        except ValueError:
+            print("Invalid input. Please enter a number (2.4 or 5).")
 
     tx = routers[routerType - 1][f'{bandChoice}GHz']['Pt']
     gain = routers[routerType - 1][f'{bandChoice}GHz']['G']
 
-    # while True:
-    #     print("Where do you want to place the router on the grid (it goes from 0 meters to 50 meters in the x and y directions)?")
-    #     router[0], router[1] = int(input("Enter a row (1-50) -> ")) - 1, int(input("Enter a column (1-50) - > ")) - 1
-    #     if 0 <= router[0] < 50 and 0 <= router[1] < 50:
-    #         break
-    #     else:
-    #         print("Invalid input, please enter row and column values between 1 and 50")
+    while True:
+        try:
+            wallName = int(input("Enter the wall type to use for this simulation (1=drywall, 2=brick, 3=concrete) -> "))
+            if wallName in [1, 2, 3]:
+                break
+            else:
+                print("Invalid input, please enter 1, 2, or 3")
+        except ValueError:
+            print("Invalid input. Please enter an integer (1, 2, or 3).")
 
     while True:
-        wallName = int(input("Enter the wall type to use for this simulation (1=drywall, 2=brick, 3=concrete) -> "))
-        if wallName in [1, 2, 3]:
-            break
-        else:
-            print("Invalid input, please enter 1, 2, or 3")
-
-    while True:
-        choice = int(input("Do you want to simulate an empty room, a room with medium clutter, or a room with heavy clutter? (1=empty, 2=medium, 3=heavy)-> "))
-        if choice in [1, 2, 3]:
-            break
-        else:
-            print("Invalid input, please enter 1, 2, or 3")
+        try:
+            choice = int(input("Do you want to simulate an empty room, a room with medium clutter, or a room with heavy clutter? (1=empty, 2=medium, 3=heavy)-> "))
+            if choice in [1, 2, 3]:
+                break
+            else:
+                print("Invalid input, please enter 1, 2, or 3")
+        except ValueError:
+            print("Invalid input. Please enter an integer (1, 2, or 3).")
 
     print(
         f"Running simulation on {routers[routerType - 1]["name"]} at {bandChoice}GHz using transmit power of {tx}dBm" 
@@ -90,8 +94,26 @@ def cust_user_input():
     bandChoice = float(input("Enter you router's frequency band in GHz (usually 2.4 or 5) -> "))
     tx = float(input("Enter its transmit power in dBm (usually between 8-30 dBm) -> "))
     gain = float(input("Enter its antenna gain in dBi (usually between 0-10 dBi) -> "))
-    wallType = int(input("Enter the wall type to use for this simulation (1=drywall, 2=brick, 3=concrete) -> "))
-    choice = int(input("Do you want to simulate an empty room, a room with medium clutter, or a room with heavy clutter? (1=empty, 2=medium, 3=heavy)-> "))
+
+    while True:
+        try:
+            wallType = int(input("Enter the wall type to use for this simulation (1=drywall, 2=brick, 3=concrete) -> "))
+            if wallType in [1, 2, 3]:
+                break
+            else:
+                print("Invalid input, please enter 1, 2, or 3")
+        except ValueError:
+            print("Invalid input. Please enter an integer (1, 2, or 3).")
+
+    while True:
+        try:
+            choice = int(input("Do you want to simulate an empty room, a room with medium clutter, or a room with heavy clutter? (1=empty, 2=medium, 3=heavy)-> "))
+            if choice in [1, 2, 3]:
+                break
+            else:
+                print("Invalid input, please enter 1, 2, or 3")
+        except ValueError:
+            print("Invalid input. Please enter an integer (1, 2, or 3).")
 
     wallType = wallTypeList[wallType][1]
     return bandChoice, tx, gain, wallType, clutter[choice - 1][1]

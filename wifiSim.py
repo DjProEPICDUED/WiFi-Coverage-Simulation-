@@ -4,11 +4,19 @@ from simFuncs import *
 from inAndOut import *
 from gui import *
 
-ui = input("Do you want to simulate a custom router or one of 3 best selling routers? (custom/best) -> ")
-if ui == "best":
-    bandChoice, tx, gain, wallType, n = user_input()
-else:
-    bandChoice, tx, gain, wallType, n = cust_user_input()
+while True:
+    try:
+        ui = input("Do you want to simulate a custom router or one of 3 best selling routers? (custom/best) -> ")
+        if ui == "best":
+            bandChoice, tx, gain, wallType, n = user_input()
+            break
+        elif ui == "custom":
+            bandChoice, tx, gain, wallType, n = cust_user_input()
+            break
+        else:
+            print("Enter a valid input.")
+    except ValueError:
+        print("Invalid input. Please enter a valid string.")
 
 #For testing purposes
 # routerType = 3
